@@ -300,13 +300,16 @@ function Dashboard({ user, onLogout }) {
       };
 
       // Call backend API
-      const response = await fetch("http://localhost:8000/api/ai/daily-plan", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
+      const response = await fetch(
+        "https://mindgarden-ai-backend.onrender.com/api/ai/daily-plan",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to generate AI plan");

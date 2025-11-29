@@ -26,7 +26,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8000/api";
+const API_BASE_URL = "https://mindgarden-ai-backend.onrender.com/api";
 
 function SignUp({ onLogin }) {
   const [formData, setFormData] = useState({
