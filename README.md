@@ -2,6 +2,8 @@
 
 **Tagline:** Grow your habits. Cultivate your mind.
 
+## Visit my App Live at:https://frontend-two-pi-49.vercel.app/
+
 ## Problem
 
 People don't fail because they lack goals. They fail because they lack consistent systems and gentle feedback. Existing habit trackers are passive checklists—they don't adapt to your mood, your energy, or your real schedule.
