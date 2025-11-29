@@ -32,48 +32,59 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 @router.post("/register", response_model=TokenResponse)
 async def register(user_data: UserCreate):
     """Register a new user with email and password"""
-    print(f"Registration attempt with data: {user_data.model_dump()}")
-    
-    users_collection = get_collection("users")
-    
-    # Check if user already exists
-    existing_user = await users_collection.find_one({"email": user_data.email})
-    if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
+    try:
+        print(f"Registration attempt with data: {user_data.model_dump()}")
+        
+        users_collection = get_collection("users")
+        
+        # Check if user already exists
+        existing_user = await users_collection.find_one({"email": user_data.email})
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered"
+            )
+        
+        # Create user document
+        user_dict = user_data.model_dump()
+        user_dict["password_hash"] = get_password_hash(user_data.password)
+        del user_dict["password"]  # Remove plain password
+        
+        user_dict["created_at"] = datetime.utcnow()
+        user_dict["is_verified"] = True  # Auto-verify for demo
+        
+        # Insert user into database
+        result = await users_collection.insert_one(user_dict)
+        user_id = str(result.inserted_id)
+        
+        # Create access token
+        access_token = create_access_token(data={"sub": user_id})
+        
+        # Return response
+        user_response = UserResponse(
+            id=user_id,
+            email=user_dict["email"],
+            name=user_dict["name"],
+            auth_provider=user_dict["auth_provider"],
+            timezone=user_dict["timezone"],
+            is_verified=user_dict["is_verified"],
+            created_at=user_dict["created_at"]
         )
-    
-    # Create user document
-    user_dict = user_data.model_dump()
-    user_dict["password_hash"] = get_password_hash(user_data.password)
-    del user_dict["password"]  # Remove plain password
-    
-    user_dict["created_at"] = datetime.utcnow()
-    user_dict["is_verified"] = True  # Auto-verify for demo
-    
-    # Insert user into database
-    result = await users_collection.insert_one(user_dict)
-    user_id = str(result.inserted_id)
-    
-    # Create access token
-    access_token = create_access_token(data={"sub": user_id})
-    
-    # Return response
-    user_response = UserResponse(
-        id=user_id,
-        email=user_dict["email"],
-        name=user_dict["name"],
-        auth_provider=user_dict["auth_provider"],
-        timezone=user_dict["timezone"],
-        is_verified=user_dict["is_verified"],
-        created_at=user_dict["created_at"]
-    )
-    
-    return TokenResponse(
-        access_token=access_token,
-        user=user_response
-    )
+        
+        return TokenResponse(
+            access_token=access_token,
+            user=user_response
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Registration error: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Registration failed: {str(e)}"
+        )
 
 @router.post("/login", response_model=TokenResponse)
 async def login(login_data: UserLogin):
