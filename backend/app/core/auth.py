@@ -15,15 +15,19 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30 * 24 * 60  # 30 days
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash"""
-    # Truncate password to 72 bytes for bcrypt (passlib expects string, handles encoding internally)
-    password_bytes = plain_password.encode('utf-8')[:72]
+    # Truncate password to 72 bytes for bcrypt
+    password_bytes = plain_password.encode('utf-8')
+    if len(password_bytes) > 72:
+        password_bytes = password_bytes[:72]
     truncated = password_bytes.decode('utf-8', errors='ignore')
     return pwd_context.verify(truncated, hashed_password)
 
 def get_password_hash(password: str) -> str:
     """Generate password hash"""
-    # Truncate password to 72 bytes for bcrypt (passlib expects string, handles encoding internally)
-    password_bytes = password.encode('utf-8')[:72]
+    # Truncate password to 72 bytes for bcrypt
+    password_bytes = password.encode('utf-8')
+    if len(password_bytes) > 72:
+        password_bytes = password_bytes[:72]
     truncated = password_bytes.decode('utf-8', errors='ignore')
     return pwd_context.hash(truncated)
 
