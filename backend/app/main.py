@@ -26,6 +26,7 @@ allowed_origins = [
     "http://localhost:5173",
     "http://localhost:3000",
     "https://frontend-kb5xtm0ij-uday-kirans-projects-a417c70c.vercel.app",
+    "https://frontend-two-pi-49.vercel.app",
     settings.frontend_url
 ]
 
