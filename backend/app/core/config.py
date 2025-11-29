@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     groq_api_key: Optional[str] = None
     
     # CORS
-    frontend_url: str = "http://localhost:5173"
+    frontend_url: str = "https://frontend-two-pi-49.vercel.app"
     
     # Environment
     environment: str = "development"
