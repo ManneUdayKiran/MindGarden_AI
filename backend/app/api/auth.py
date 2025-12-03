@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, BackgroundTasks
 from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from datetime import datetime
@@ -9,6 +9,7 @@ from ..models.schemas import User, UserCreate, UserLogin, UserResponse, TokenRes
 from ..core.database import get_collection
 from ..core.auth import verify_password, get_password_hash, create_access_token, verify_token
 from ..core.config import settings
+from ..services.email_service import email_service
 
 router = APIRouter()
 security = HTTPBearer()
@@ -30,7 +31,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     return User(**user_data)
 
 @router.post("/register", response_model=TokenResponse)
-async def register(user_data: UserCreate):
+async def register(user_data: UserCreate, background_tasks: BackgroundTasks):
     """Register a new user with email and password"""
     try:
         print(f"Registration attempt with data: {user_data.model_dump()}")
@@ -56,6 +57,24 @@ async def register(user_data: UserCreate):
         # Insert user into database
         result = await users_collection.insert_one(user_dict)
         user_id = str(result.inserted_id)
+        
+        # Send welcome email in background
+        def send_welcome_email():
+            try:
+                html_content = email_service.create_welcome_email(
+                    user_name=user_dict["name"],
+                    user_email=user_dict["email"]
+                )
+                email_service.send_email(
+                    to_email=user_dict["email"],
+                    subject="🌿 Welcome to MindGarden AI - Your Productivity Journey Starts Now!",
+                    html_content=html_content
+                )
+                print(f"Welcome email sent to {user_dict['email']}")
+            except Exception as e:
+                print(f"Failed to send welcome email: {e}")
+        
+        background_tasks.add_task(send_welcome_email)
         
         # Create access token
         access_token = create_access_token(data={"sub": user_id})

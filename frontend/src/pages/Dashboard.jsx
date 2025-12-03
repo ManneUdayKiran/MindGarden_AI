@@ -39,17 +39,12 @@ import { motion } from "framer-motion";
 
 // Components
 import AppLayout from "../components/AppLayout";
-import { habitsAPI, tasksAPI, moodAPI } from "../services/api";
+import { habitsAPI, tasksAPI, moodAPI, analyticsAPI } from "../services/api";
 
 function Dashboard({ user, onLogout }) {
   const [currentUser] = useState({
     name: user?.name || "User",
     avatar: "/api/placeholder/40/40",
-    lastMoodEmoji: "😊",
-    gardenHealthScore: 78,
-    consistencyIndex: 73,
-    activeHabits: 6,
-    longestStreak: 10,
   });
 
   // Real data states
@@ -66,12 +61,33 @@ function Dashboard({ user, onLogout }) {
     habitCompletion: { value: 0, total: 0, change: 0, trend: "stable" },
   });
   const [weeklyHabitData, setWeeklyHabitData] = useState([]);
+  const [gardenHealth, setGardenHealth] = useState({
+    overall_score: 0,
+    status: "budding",
+    description: "Loading...",
+    components: { habits: 0, tasks: 0, mood: 0 },
+  });
+  const [analyticsData, setAnalyticsData] = useState(null);
 
   // Fetch data from API
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
+
+        // Fetch analytics data first
+        try {
+          const analyticsResponse = await analyticsAPI.getDashboard(30);
+          const analyticsInfo = analyticsResponse.data;
+          setAnalyticsData(analyticsInfo);
+
+          // Set garden health from analytics
+          if (analyticsInfo.garden_health) {
+            setGardenHealth(analyticsInfo.garden_health);
+          }
+        } catch (error) {
+          console.error("Error fetching analytics data:", error);
+        }
 
         // Fetch habits
         const habitsResponse = await habitsAPI.getHabits();
@@ -428,7 +444,7 @@ function Dashboard({ user, onLogout }) {
       user={user || currentUser}
       onLogout={onLogout}
     >
-      <Container maxWidth="xl" sx={{ mt: 2, mb: 4 }}>
+      <Container maxWidth="xl" sx={{ mt: 2, mb: 2 }}>
         {loading ? (
           <Box
             sx={{
@@ -455,7 +471,7 @@ function Dashboard({ user, onLogout }) {
             >
               <Card
                 sx={{
-                  mb: 4,
+                  mb: 2,
                   background:
                     "linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%)",
                   border: "1px solid rgba(76, 175, 80, 0.2)",
@@ -477,7 +493,7 @@ function Dashboard({ user, onLogout }) {
                           fontWeight="bold"
                           color="primary"
                         >
-                          {currentUser.gardenHealthScore}/100
+                          {Math.round(gardenHealth.overall_score)}/100
                         </Typography>
                         <Typography variant="body1" fontWeight="600">
                           Garden Health Score
@@ -490,19 +506,34 @@ function Dashboard({ user, onLogout }) {
                             mt: 1,
                           }}
                         >
-                          <TrendingUp
-                            sx={{
-                              color: "success.main",
-                              fontSize: 20,
-                              mr: 0.5,
-                            }}
-                          />
+                          {gardenHealth.overall_score >= 60 ? (
+                            <TrendingUp
+                              sx={{
+                                color: "success.main",
+                                fontSize: 20,
+                                mr: 0.5,
+                              }}
+                            />
+                          ) : (
+                            <TrendingDown
+                              sx={{
+                                color: "warning.main",
+                                fontSize: 20,
+                                mr: 0.5,
+                              }}
+                            />
+                          )}
                           <Typography
                             variant="body2"
-                            color="success.main"
+                            color={
+                              gardenHealth.overall_score >= 60
+                                ? "success.main"
+                                : "warning.main"
+                            }
                             fontWeight="600"
                           >
-                            ↑ 12% vs last week
+                            {gardenHealth.status.charAt(0).toUpperCase() +
+                              gardenHealth.status.slice(1)}
                           </Typography>
                         </Box>
                       </Box>
@@ -517,29 +548,37 @@ function Dashboard({ user, onLogout }) {
                           color="text.secondary"
                           sx={{ fontStyle: "italic" }}
                         >
-                          "You complete most tasks between 9–11 AM. Protect this
-                          time."
+                          {analyticsData?.insights?.[0] ||
+                            gardenHealth.description}
                         </Typography>
                         <Typography
                           variant="caption"
                           color="primary"
                           sx={{ fontWeight: 600 }}
                         >
-                          AI Insight
+                          Health Insight
                         </Typography>
                       </Box>
                     </Box>
                     <Box sx={{ flex: "0 0 auto", minWidth: 200 }}>
                       <Box sx={{ textAlign: { xs: "center", md: "right" } }}>
                         <Typography variant="body2" color="text.secondary">
-                          Current State
+                          Active Habits
                         </Typography>
                         <Typography variant="h6" fontWeight="bold">
-                          Peak Focus Zone
+                          {analyticsData?.habits?.total_active || 0} Habits
                         </Typography>
                         <Chip
-                          label="Optimal Performance"
-                          color="success"
+                          label={`${Math.round(
+                            analyticsData?.habits?.completion_rate || 0
+                          )}% Complete`}
+                          color={
+                            analyticsData?.habits?.completion_rate >= 80
+                              ? "success"
+                              : analyticsData?.habits?.completion_rate >= 60
+                              ? "warning"
+                              : "default"
+                          }
                           size="small"
                           sx={{ mt: 1 }}
                         />
@@ -558,7 +597,7 @@ function Dashboard({ user, onLogout }) {
             >
               <Card
                 sx={{
-                  mb: 4,
+                  mb: 2,
                   background:
                     "linear-gradient(135deg, #f3e5f5 0%, #e1f5fe 100%)",
                   border: "1px solid rgba(156, 39, 176, 0.2)",
@@ -652,7 +691,7 @@ function Dashboard({ user, onLogout }) {
             </motion.div>
 
             {/* Row 3: Top Habits Streaks */}
-            <Box sx={{ mb: 4 }}>
+            <Box sx={{ mb: 2 }}>
               <Box sx={{ flex: "1 1 100%", minWidth: 300 }}>
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
@@ -767,15 +806,30 @@ function Dashboard({ user, onLogout }) {
             </Box>
 
             {/* Row 4: Two Column Layout */}
-            <Box sx={{ display: "flex", gap: 4, mb: 6, flexWrap: "wrap" }}>
+            <Box
+              sx={{
+                display: "flex",
+                gap: 2,
+                mb: 2,
+                flexWrap: "wrap",
+                alignItems: "stretch",
+              }}
+            >
               {/* Today's Focus */}
-              <Box sx={{ flex: "1 1 45%", minWidth: 300 }}>
+              <Box
+                sx={{
+                  flex: "1 1 calc(50% - 16px)",
+                  minWidth: 600,
+                  display: "flex",
+                }}
+              >
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
+                  style={{ width: "100%", display: "flex" }}
                 >
-                  <Card sx={{ height: "100%" }}>
+                  <Card sx={{ height: "100%", width: "100%" }}>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
                         🎯 Today's Focus
@@ -863,13 +917,20 @@ function Dashboard({ user, onLogout }) {
               </Box>
 
               {/* Weekly Progress Chart */}
-              <Box sx={{ flex: "1 1 45%", minWidth: 300 }}>
+              <Box
+                sx={{
+                  flex: "1 1 calc(50% - 8px)",
+                  minWidth: 300,
+                  display: "flex",
+                }}
+              >
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.15 }}
+                  style={{ width: "100%", display: "flex" }}
                 >
-                  <Card sx={{ height: "100%" }}>
+                  <Card sx={{ height: "100%", width: "100%" }}>
                     <CardContent>
                       <Typography
                         variant="h6"
@@ -989,7 +1050,7 @@ function Dashboard({ user, onLogout }) {
             </Box>
 
             {/* Row 5: Insights & Analytics */}
-            <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+            <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
               {/* Weekly Stats & Trends */}
               <Box sx={{ flex: "1 1 100%", minWidth: 300 }}>
                 <motion.div
@@ -1135,80 +1196,100 @@ function Dashboard({ user, onLogout }) {
                         🔁 Top Habits & Streaks
                       </Typography>
 
-                      <List dense>
-                        {habits.slice(0, 4).map((habit, index) => (
-                          <ListItem key={habit.id} sx={{ px: 0 }}>
-                            <ListItemText
-                              primary={
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                  }}
-                                >
-                                  <Typography variant="body2" fontWeight="600">
-                                    {habit.name}
-                                  </Typography>
+                      {habits.length === 0 ? (
+                        <Box
+                          sx={{
+                            textAlign: "center",
+                            py: 4,
+                            color: "text.secondary",
+                          }}
+                        >
+                          <Typography variant="body1" sx={{ mb: 2 }}>
+                            🌱 No habits yet
+                          </Typography>
+                          <Typography variant="caption">
+                            Create habits to track your streaks and progress
+                          </Typography>
+                        </Box>
+                      ) : (
+                        <List dense>
+                          {habits.slice(0, 4).map((habit, index) => (
+                            <ListItem key={habit.id} sx={{ px: 0 }}>
+                              <ListItemText
+                                primary={
                                   <Box
                                     sx={{
                                       display: "flex",
                                       alignItems: "center",
+                                      justifyContent: "space-between",
                                     }}
                                   >
-                                    <LocalFireDepartment
-                                      sx={{
-                                        color: "orange",
-                                        fontSize: 16,
-                                        mr: 0.5,
-                                      }}
-                                    />
                                     <Typography
                                       variant="body2"
-                                      fontWeight="bold"
+                                      fontWeight="600"
                                     >
-                                      {habit.streak}
+                                      {habit.name}
                                     </Typography>
-                                  </Box>
-                                </Box>
-                              }
-                              secondary={
-                                <Box sx={{ mt: 1 }}>
-                                  <Box
-                                    sx={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      mb: 0.5,
-                                    }}
-                                  >
-                                    <Typography variant="caption">
-                                      This week
-                                    </Typography>
-                                    <Typography
-                                      variant="caption"
-                                      fontWeight="bold"
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                      }}
                                     >
-                                      {habit.weeklyCompletion}%
-                                    </Typography>
+                                      <LocalFireDepartment
+                                        sx={{
+                                          color: "orange",
+                                          fontSize: 16,
+                                          mr: 0.5,
+                                        }}
+                                      />
+                                      <Typography
+                                        variant="body2"
+                                        fontWeight="bold"
+                                      >
+                                        {habit.streak}
+                                      </Typography>
+                                    </Box>
                                   </Box>
-                                  <LinearProgress
-                                    variant="determinate"
-                                    value={habit.weeklyCompletion}
-                                    color={
-                                      habit.weeklyCompletion > 80
-                                        ? "success"
-                                        : habit.weeklyCompletion > 50
-                                        ? "warning"
-                                        : "error"
-                                    }
-                                    sx={{ height: 4, borderRadius: 2 }}
-                                  />
-                                </Box>
-                              }
-                            />
-                          </ListItem>
-                        ))}
-                      </List>
+                                }
+                                secondary={
+                                  <Box sx={{ mt: 1 }}>
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        mb: 0.5,
+                                      }}
+                                    >
+                                      <Typography variant="caption">
+                                        This week
+                                      </Typography>
+                                      <Typography
+                                        variant="caption"
+                                        fontWeight="bold"
+                                      >
+                                        {habit.weeklyCompletion}%
+                                      </Typography>
+                                    </Box>
+                                    <LinearProgress
+                                      variant="determinate"
+                                      value={habit.weeklyCompletion}
+                                      color={
+                                        habit.weeklyCompletion > 80
+                                          ? "success"
+                                          : habit.weeklyCompletion > 50
+                                          ? "warning"
+                                          : "error"
+                                      }
+                                      sx={{ height: 4, borderRadius: 2 }}
+                                    />
+                                  </Box>
+                                }
+                              />
+                            </ListItem>
+                          ))}
+                        </List>
+                      )}
                     </CardContent>
                   </Card>
                 </motion.div>

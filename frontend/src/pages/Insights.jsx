@@ -245,7 +245,7 @@ const Insights = ({ user, onLogout }) => {
 
                     <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
                       {/* Overall Score & Rank */}
-                      <Box sx={{ flex: "1 1 22%", minWidth: 200 }}>
+                      <Box sx={{ flex: "1 1 calc(25% - 18px)", minWidth: 200 }}>
                         <Paper
                           sx={{
                             p: 3,
@@ -253,6 +253,7 @@ const Insights = ({ user, onLogout }) => {
                             background:
                               "linear-gradient(135deg, #fff9c4 0%, #fff59d 100%)",
                             border: "1px solid #ffd54f",
+                            height: "100%",
                           }}
                         >
                           <Typography variant="h5" sx={{ mb: 1 }}>
@@ -272,7 +273,7 @@ const Insights = ({ user, onLogout }) => {
                       </Box>
 
                       {/* Current Streak */}
-                      <Box sx={{ flex: "1 1 22%", minWidth: 200 }}>
+                      <Box sx={{ flex: "1 1 calc(25% - 18px)", minWidth: 200 }}>
                         <Paper
                           sx={{
                             p: 3,
@@ -280,6 +281,7 @@ const Insights = ({ user, onLogout }) => {
                             background:
                               "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)",
                             border: "1px solid #81c784",
+                            height: "100%",
                           }}
                         >
                           <Typography variant="h5" sx={{ mb: 1 }}>
@@ -306,7 +308,7 @@ const Insights = ({ user, onLogout }) => {
                       </Box>
 
                       {/* Tasks Done This Week */}
-                      <Box sx={{ flex: "1 1 22%", minWidth: 200 }}>
+                      <Box sx={{ flex: "1 1 calc(25% - 18px)", minWidth: 200 }}>
                         <Paper
                           sx={{
                             p: 3,
@@ -314,6 +316,7 @@ const Insights = ({ user, onLogout }) => {
                             background:
                               "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
                             border: "1px solid #90caf9",
+                            height: "100%",
                           }}
                         >
                           <Typography variant="h5" sx={{ mb: 1 }}>
@@ -373,7 +376,7 @@ const Insights = ({ user, onLogout }) => {
                       </Box>
 
                       {/* Habits & Mood Average */}
-                      <Box sx={{ flex: "1 1 22%", minWidth: 200 }}>
+                      <Box sx={{ flex: "1 1 calc(25% - 18px)", minWidth: 200 }}>
                         <Paper
                           sx={{
                             p: 3,
@@ -381,6 +384,7 @@ const Insights = ({ user, onLogout }) => {
                             background:
                               "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)",
                             border: "1px solid #ce93d8",
+                            height: "100%",
                           }}
                         >
                           <Typography variant="h5" sx={{ mb: 1 }}>
@@ -547,7 +551,9 @@ const Insights = ({ user, onLogout }) => {
                     </Typography>
 
                     <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-                      <Box sx={{ flex: "1 1 30%", minWidth: 250 }}>
+                      <Box
+                        sx={{ flex: "1 1 calc(33.333% - 16px)", minWidth: 250 }}
+                      >
                         <motion.div
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
@@ -560,6 +566,7 @@ const Insights = ({ user, onLogout }) => {
                               background:
                                 "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
                               border: "1px solid #90caf9",
+                              height: "100%",
                             }}
                           >
                             <CheckCircle
@@ -606,7 +613,9 @@ const Insights = ({ user, onLogout }) => {
                         </motion.div>
                       </Box>
 
-                      <Box sx={{ flex: "1 1 30%", minWidth: 250 }}>
+                      <Box
+                        sx={{ flex: "1 1 calc(33.333% - 16px)", minWidth: 250 }}
+                      >
                         <motion.div
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
@@ -619,6 +628,7 @@ const Insights = ({ user, onLogout }) => {
                               background:
                                 "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)",
                               border: "1px solid #81c784",
+                              height: "100%",
                             }}
                           >
                             <LocalFireDepartment
@@ -651,7 +661,9 @@ const Insights = ({ user, onLogout }) => {
                         </motion.div>
                       </Box>
 
-                      <Box sx={{ flex: "1 1 30%", minWidth: 250 }}>
+                      <Box
+                        sx={{ flex: "1 1 calc(33.333% - 16px)", minWidth: 250 }}
+                      >
                         <motion.div
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
@@ -664,6 +676,7 @@ const Insights = ({ user, onLogout }) => {
                               background:
                                 "linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)",
                               border: "1px solid #ffb74d",
+                              height: "100%",
                             }}
                           >
                             <Schedule
@@ -914,126 +927,6 @@ const Insights = ({ user, onLogout }) => {
                     </Card>
                   </motion.div>
                 </Box>
-
-                {/* Focus & Time Analysis */}
-                <Box sx={{ flex: "1 1 35%", minWidth: 300 }}>
-                  <motion.div
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                  >
-                    <Card sx={{ height: "100%" }}>
-                      <CardContent>
-                        <Typography
-                          variant="h6"
-                          fontWeight="600"
-                          sx={{ mb: 3, display: "flex", alignItems: "center" }}
-                        >
-                          <Schedule sx={{ mr: 1, color: "primary.main" }} />
-                          ⏱️ Focus & Time Analysis
-                        </Typography>
-
-                        <Box sx={{ textAlign: "center", mb: 3 }}>
-                          <Typography
-                            variant="h2"
-                            fontWeight="bold"
-                            color="primary.main"
-                            sx={{ mb: 1 }}
-                          >
-                            {productivityMetrics.focusHours.value}h
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Weekly Focus Hours
-                          </Typography>
-                        </Box>
-
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 2,
-                          }}
-                        >
-                          <Paper
-                            sx={{
-                              p: 2,
-                              textAlign: "center",
-                              background:
-                                "linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%)",
-                              border: "1px solid #9fa8da",
-                            }}
-                          >
-                            <Typography variant="h6" sx={{ color: "#3f51b5" }}>
-                              {Math.round(
-                                (productivityMetrics.focusHours.value / 7) * 10
-                              ) / 10}
-                              h
-                            </Typography>
-                            <Typography variant="caption" color="primary.dark">
-                              Daily Average
-                            </Typography>
-                          </Paper>
-
-                          <Paper
-                            sx={{
-                              p: 2,
-                              textAlign: "center",
-                              background:
-                                "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)",
-                              border: "1px solid #81c784",
-                            }}
-                          >
-                            <Typography variant="h6" sx={{ color: "#2e7d32" }}>
-                              2-4 PM
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              Peak Hours
-                            </Typography>
-                          </Paper>
-
-                          <Paper
-                            sx={{
-                              p: 2,
-                              textAlign: "center",
-                              background:
-                                "linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)",
-                              border: "1px solid #ffb74d",
-                            }}
-                          >
-                            <Typography variant="h6" sx={{ color: "#e65100" }}>
-                              85%
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              Efficiency
-                            </Typography>
-                          </Paper>
-                        </Box>
-
-                        <Box sx={{ mt: 2 }}>
-                          <Typography variant="body2" sx={{ mb: 1 }}>
-                            <strong>Trend:</strong>{" "}
-                            <Chip
-                              label={`↑ ${productivityMetrics.focusHours.change}%`}
-                              size="small"
-                              color="success"
-                            />
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            🎯 Best day: <strong>Tuesday</strong>
-                            <br />
-                            📅 Goal: <strong>40h/week</strong>
-                          </Typography>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                </Box>
               </Box>
             </Box>
 
@@ -1256,62 +1149,85 @@ const Insights = ({ user, onLogout }) => {
                     <Box
                       sx={{ display: "flex", flexDirection: "column", gap: 2 }}
                     >
-                      {aiFindings.map((finding, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{
-                            duration: 0.4,
-                            delay: 0.4 + index * 0.1,
+                      {aiFindings.length === 0 ? (
+                        <Paper
+                          sx={{
+                            p: 4,
+                            textAlign: "center",
+                            background:
+                              "linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%)",
+                            border: "1px solid #bdbdbd",
                           }}
                         >
-                          <Paper
+                          <Psychology
                             sx={{
-                              p: 2,
-                              background:
-                                index === 0
-                                  ? "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)"
-                                  : index === 1
-                                  ? "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)"
-                                  : index === 2
-                                  ? "linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)"
-                                  : "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)",
-                              border:
-                                index === 0
-                                  ? "1px solid #90caf9"
-                                  : index === 1
-                                  ? "1px solid #81c784"
-                                  : index === 2
-                                  ? "1px solid #ffb74d"
-                                  : "1px solid #ce93d8",
+                              fontSize: 48,
+                              color: "text.secondary",
+                              mb: 2,
+                            }}
+                          />
+                          <Typography
+                            variant="h6"
+                            color="text.secondary"
+                            gutterBottom
+                          >
+                            No AI Insights Available Yet
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Start tracking your habits, tasks, and mood to
+                            receive personalized AI-powered insights and
+                            recommendations.
+                          </Typography>
+                        </Paper>
+                      ) : (
+                        aiFindings.map((finding, index) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{
+                              duration: 0.4,
+                              delay: 0.4 + index * 0.1,
                             }}
                           >
-                            <Box
+                            <Paper
                               sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 2,
+                                p: 2,
+                                background:
+                                  index === 0
+                                    ? "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)"
+                                    : index === 1
+                                    ? "linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)"
+                                    : index === 2
+                                    ? "linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)"
+                                    : "linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)",
+                                border:
+                                  index === 0
+                                    ? "1px solid #90caf9"
+                                    : index === 1
+                                    ? "1px solid #81c784"
+                                    : index === 2
+                                    ? "1px solid #ffb74d"
+                                    : "1px solid #ce93d8",
                               }}
                             >
-                              <Typography variant="h4">
-                                {finding.icon}
-                              </Typography>
-                              <Box sx={{ flex: 1 }}>
-                                <Typography variant="body1" fontWeight="600">
-                                  {finding.title}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                >
-                                  {finding.description}
-                                </Typography>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 2,
+                                }}
+                              >
+                                <Box sx={{ flex: 1 }}>
+                                  <Typography variant="body1" fontWeight="500">
+                                    {finding}
+                                  </Typography>
+                                </Box>
                               </Box>
-                            </Box>
-                          </Paper>
-                        </motion.div>
-                      ))}
+                            </Paper>
+                          </motion.div>
+                        ))
+                      )}
                     </Box>
                   </CardContent>
                 </Card>

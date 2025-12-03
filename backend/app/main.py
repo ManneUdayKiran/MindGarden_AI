@@ -11,6 +11,7 @@ from .api.mood import router as mood_router
 from .api.ai_coach import router as ai_router
 from .api.analytics import router as analytics_router
 from .api.notifications import router as notifications_router
+from .api.emails import router as emails_router
 
 # Create FastAPI application
 app = FastAPI(
@@ -72,6 +73,7 @@ app.include_router(mood_router, prefix="/api/mood", tags=["Mood"])
 app.include_router(ai_router, prefix="/api/ai", tags=["AI Coach"])
 app.include_router(analytics_router, prefix="/api/analytics", tags=["Analytics"])
 app.include_router(notifications_router, prefix="/api/notifications", tags=["Notifications"])
+app.include_router(emails_router, prefix="/api/emails", tags=["Emails"])
 
 # Global exception handler
 @app.exception_handler(Exception)

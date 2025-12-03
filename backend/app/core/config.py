@@ -23,6 +23,14 @@ class Settings(BaseSettings):
     # Groq AI
     groq_api_key: Optional[str] = None
     
+    # Email Configuration
+    smtp_server: str = "smtp.gmail.com"
+    smtp_port: int = 587
+    smtp_username: Optional[str] = None
+    smtp_password: Optional[str] = None
+    from_email: Optional[str] = None
+    from_name: str = "MindGarden AI"
+    
     # CORS
     frontend_url: str = "https://frontend-two-pi-49.vercel.app"
     

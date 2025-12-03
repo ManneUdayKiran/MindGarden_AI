@@ -732,12 +732,39 @@ const Tasks = ({ user, onLogout }) => {
                           color: "text.secondary",
                         }}
                       >
-                        <Typography variant="body1" sx={{ mb: 2 }}>
+                        <Assignment
+                          sx={{ fontSize: 64, color: "text.disabled", mb: 2 }}
+                        />
+                        <Typography
+                          variant="h6"
+                          sx={{ mb: 1 }}
+                          color="text.primary"
+                        >
                           📝 No tasks yet
                         </Typography>
-                        <Typography variant="caption">
-                          Click "Add Task" to create your first task
+                        <Typography variant="body2" sx={{ mb: 3 }}>
+                          Create your first task to get started with AI-powered
+                          scheduling
                         </Typography>
+                        <Button
+                          variant="contained"
+                          startIcon={<Add />}
+                          onClick={handleAddTask}
+                          size="large"
+                          sx={{
+                            background:
+                              "linear-gradient(45deg, #2196f3 30%, #42a5f5 90%)",
+                            "&:hover": {
+                              background:
+                                "linear-gradient(45deg, #1976d2 30%, #2196f3 90%)",
+                            },
+                            borderRadius: 2,
+                            px: 4,
+                            py: 1.5,
+                          }}
+                        >
+                          Add Your First Task
+                        </Button>
                       </Box>
                     ) : (
                       <TableContainer
@@ -1001,7 +1028,9 @@ const Tasks = ({ user, onLogout }) => {
                     </Box>
 
                     <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-                      <Box sx={{ flex: "1 1 30%", minWidth: 200 }}>
+                      <Box
+                        sx={{ flex: "1 1 calc(33.333% - 16px)", minWidth: 250 }}
+                      >
                         <TextField
                           fullWidth
                           label="Estimated Time"
@@ -1016,11 +1045,14 @@ const Tasks = ({ user, onLogout }) => {
                         />
                       </Box>
 
-                      <Box sx={{ flex: "1 1 30%", minWidth: 200 }}>
+                      <Box
+                        sx={{ flex: "1 1 calc(33.333% - 16px)", minWidth: 250 }}
+                      >
                         <FormControl fullWidth>
                           <InputLabel>Priority</InputLabel>
                           <Select
                             value={formData.priority}
+                            label="Priority"
                             onChange={(e) =>
                               setFormData({
                                 ...formData,
@@ -1038,11 +1070,14 @@ const Tasks = ({ user, onLogout }) => {
                         </FormControl>
                       </Box>
 
-                      <Box sx={{ flex: "1 1 30%", minWidth: 200 }}>
+                      <Box
+                        sx={{ flex: "1 1 calc(33.333% - 16px)", minWidth: 250 }}
+                      >
                         <FormControl fullWidth>
                           <InputLabel>Effort Type</InputLabel>
                           <Select
                             value={formData.effortType}
+                            label="Effort Type"
                             onChange={(e) =>
                               setFormData({
                                 ...formData,
